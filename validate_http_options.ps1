@@ -156,13 +156,13 @@ function Test-HttpOptions {
             # PowerShell 7+: -SkipHttpErrorCheck keeps non-2xx as non-terminating, but we support 5.1 via try/catch
             $resp = $null
             if ($PSVersionTable.PSVersion.Major -ge 7) {
-                $resp = Invoke-WebRequest -Method Options -Uri $Url -TimeoutSec $Timeout -SkipHttpErrorCheck -ErrorAction Stop
+                $resp = Invoke-WebRequest -Method Options -Uri $Url -TimeoutSec $TimeoutSecLocal -SkipHttpErrorCheck -ErrorAction Stop
                 # In PS7, StatusCode is available; Headers as well
                 $result.StatusCode = [int]$resp.StatusCode
                 $result.Headers    = $resp.Headers
             } else {
                 # Windows PowerShell 5.1: non-2xx throws WebException, catch to read Response
-                $resp = Invoke-WebRequest -Method Options -Uri $Url -TimeoutSec $Timeout -ErrorAction Stop
+                $resp = Invoke-WebRequest -Method Options -Uri $Url -TimeoutSec $TimeoutSecLocal -ErrorAction Stop
                 $result.StatusCode = 200
                 $result.Headers    = $resp.Headers
             }

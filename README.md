@@ -1,28 +1,35 @@
-# Validate-HttpOptions.ps1
 
-Validate whether the HTTP **OPTIONS** method is enabled on a list of servers and generate audit‑friendly results for remediation tracking (e.g., PCI DSS 11.3.1 follow‑up).
+# HTTP OPTIONS Enumeration Script
 
-## Why
-Some scanners flag `HTTP OPTIONS Method Enabled` as a finding. This script sends an `OPTIONS` request to each target and records whether the method is explicitly allowed (via the `Allow:` header), not listed, or blocked (e.g., `405 Method Not Allowed`). The output is a timestamped log you can attach to tickets or remediation projects.
+This repository provides scripts for enumerating allowed HTTP methods using the `OPTIONS` request. Two implementations are included to support different use cases: a lightweight PowerShell script and a more detailed Bash script powered by **Nmap**.
 
-## Features
-- 🧪 Sends HTTP **OPTIONS** requests to `/` for each target
-- 🔒 HTTPS by default; optional fallback to HTTP:80
-- 📜 Captures and parses the `Allow:` header (if present)
-- 🧭 Handles non-2xx responses (e.g., `405` with `Allow:`)
-- 🧰 Works on Windows PowerShell 5.1 and PowerShell 7+
-- 🧾 Writes a CSV-like log: `Server:Port,Status,Details`
-- 🛡️ Optional TLS trust bypass for internal/self-signed testing
+---
 
-## Input Format
-One target per line in a text file. Supported forms:
-- `server:port`
-- `https://server:port`
-- `http://server:port`
-- `[IPv6]:port`
-- `server` (defaults to `https:443`; optional fallback to `http:80` when `-TryHttpFallback` is set)
+## Available Scripts
 
-> Tip: Keep comments using `#` and blank lines—they are ignored.
+### 1. PowerShell Script (`.ps1`)
+A fast and lightweight option for quickly checking HTTP `OPTIONS` responses.
 
-## Output
-Creates a timestamped log in the current directory, e.g.:
+**Best for:**
+- Quick validation
+- Lightweight testing
+- Environments where Nmap is not available
+
+---
+
+### 2. Bash Script (Nmap-Based)
+
+The Bash script uses **Nmap** to perform a more comprehensive enumeration of HTTP `OPTIONS` methods and collect additional context about the target.
+
+#### Key Features
+- Uses **Nmap** to enumerate HTTP `OPTIONS` methods
+- Detects and includes **operating system information** (when available)
+- Performs a more detailed scan than the PowerShell version
+- Automatically creates a **new results directory per run**
+
+#### Output
+Each execution generates a dedicated output directory containing:
+- **Raw Nmap output**
+- **Parsed CSV file** with summarized results, suitable for reporting or further analysis
+
+Example output structure:
